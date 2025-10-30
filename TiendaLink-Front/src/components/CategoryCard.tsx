@@ -1,105 +1,104 @@
 // src/components/CategoryCard.tsx
-import React, { useState } from 'react';
-import { Heart, MessageCircle } from 'lucide-react';
-
-const WHATSAPP_NUMBER = '56938761485'; // sin +, con código país
+import React from 'react';
+import { ShoppingCart } from 'lucide-react';
 
 interface CategoryCardProps {
   id: number;
   title: string;
+  description?: string;
+  price: string;
+  discount: string;
   image: string;
-  size: 'small' | 'medium' | 'large' | 'xl';
-  category?: string;
-  unit?: string;
+  size?: 'small' | 'medium' | 'large' | 'xl';
+  featured?: boolean;
+  onAddToCart?: (product: { id: number; title: string; price: string; discount: string; image: string; description: string }) => void;
+  onClick?: () => void;
 }
 
 const CategoryCard: React.FC<CategoryCardProps> = ({
   id,
   title,
+  description = '',
+  price,
+  discount,
   image,
-  size,
-  category = "Productos",
-  unit = "1 un",
+  featured = false,
+  onAddToCart,
+  onClick,
 }) => {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const priceNum = parseFloat(price.replace(/[$.]/g, ''));
+  const discountNum = parseInt(discount) || 0;
+  const finalPrice = priceNum * (1 - discountNum / 100);
+  const hasDiscount = discountNum > 0;
 
-  const sizeClassesMap = {
-    small:  'col-span-1 row-span-1',
-    medium: 'col-span-2 row-span-1',
-    large:  'col-span-3 row-span-2',
-    xl:     'col-span-6 row-span-1'
-  } as const;
-  const spanClasses = sizeClassesMap[size];
-
-  const aspectMap = {
-    small:  'aspect-square',
-    medium: 'aspect-[2/1]',
-    large:  'aspect-[3/2]',
-    xl:     'aspect-[6/1]'
-  } as const;
-  const aspectClasses = aspectMap[size];
-
-  const toggleFavorite = (e: React.MouseEvent) => {
+  const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsFavorite(f => !f);
+    if (onAddToCart) {
+      onAddToCart({ id, title, price, discount, image, description });
+    }
   };
-
-  // Construimos el mensaje y el link a api.whatsapp.com (NO wa.me)
-  const message = `Hola, me interesa el producto "${title}". ¿Me puedes dar más información?`;
-  const encoded = encodeURIComponent(message);
-  const whatsappHref = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encoded}`;
 
   return (
     <div
-      className={`
-        ${spanClasses}
-        flex flex-col bg-white rounded-lg overflow-hidden
-        shadow-sm hover:shadow-md transition-shadow duration-300
-      `}
+      onClick={onClick}
+      className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 border border-gray-100"
     >
       <div className="relative">
-        <span className="absolute top-2 left-2 z-10 bg-amber-500 text-white text-xs px-2 py-1 rounded-sm">
-          MultiserviciosCopiapo
-        </span>
-        <button
-          onClick={toggleFavorite}
-          className="absolute top-2 right-2 z-10 bg-white/80 p-1.5 rounded-full hover:bg-white transition"
-        >
-          <Heart
-            className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
-          />
-        </button>
+        <img
+          src={image}
+          alt={title}
+          className="w-full h-48 object-cover"
+        />
 
-        <div className={`w-full ${aspectClasses} overflow-hidden`}>
-          <img
-            src={image}
-            alt={title}
-            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-          />
-        </div>
+        {hasDiscount && (
+          <span className="absolute top-3 left-3 bg-yellow-400 text-purple-900 text-xs font-bold px-3 py-1 rounded-lg shadow-md">
+            ¡OFERTA!
+          </span>
+        )}
+
+        {featured && (
+          <span className="absolute bottom-3 left-3 bg-purple-600 text-white text-xs font-semibold px-3 py-1 rounded-lg shadow-md">
+            PRODUCTO DESTACADO
+          </span>
+        )}
       </div>
 
-      <div className="flex flex-col flex-grow p-4">
-        <p className="text-xs text-gray-500 uppercase">{category}</p>
-        <h3 className="text-gray-800 font-medium line-clamp-2 mb-2">{title}</h3>
+      <div className="p-4 space-y-3">
+        <h3 className="text-gray-900 font-bold text-sm line-clamp-2 min-h-[2.5rem]">
+          {title}
+        </h3>
 
-        <div className="mt-auto space-y-2">
-          <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded">
-            {unit}
-          </span>
+        <div className="space-y-1">
+          {hasDiscount && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-400 line-through">
+                ${priceNum.toLocaleString('es-CL')}
+              </span>
+              <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded">
+                -{discountNum}%
+              </span>
+            </div>
+          )}
+          <div className="text-2xl font-bold text-purple-700">
+            ${finalPrice.toLocaleString('es-CL')}
+          </div>
+        </div>
 
-          {/* Enlace directo a api.whatsapp.com */}
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg flex items-center justify-center gap-2 transition-colors focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-white"
-            aria-label="Ir al WhatsApp"
-            title="Ir al WhatsApp"
+        <div className="flex gap-2">
+          <button
+            onClick={onClick}
+            className="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2.5 px-4 rounded-lg transition-all text-sm"
           >
-            <MessageCircle className="w-4 h-4" />
-            Ir al WhatsApp
-          </a>
+            VISITA NUESTRA TIENDA
+          </button>
+
+          <button
+            onClick={handleAddToCart}
+            className="bg-yellow-400 hover:bg-yellow-500 text-purple-900 font-bold p-2.5 rounded-lg transition-all shadow-sm hover:shadow-md"
+            title="Agregar al carrito"
+          >
+            <ShoppingCart className="w-5 h-5" />
+          </button>
         </div>
       </div>
     </div>

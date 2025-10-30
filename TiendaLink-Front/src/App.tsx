@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from './contexts/AuthContext';
+import { useCart } from './contexts/CartContext';
 
 import AdminDashboard from './pages/admin/AdminDashboard';
 import Login from './pages/auth/Login';
@@ -10,16 +11,17 @@ import AnnouncementBar from './components/AnnouncementBar';
 import HomeSections from './components/HomeSections';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import LocationSection from './components/LocationSection'; 
-
-import { CartItem } from './types';
+import LocationSection from './components/LocationSection';
+import Cart from './pages/cart/Cart';
 
 function App() {
   const { user } = useAuth();
+  const { items, removeFromCart, updateQuantity, clearCart } = useCart();
 
   const [sections, setSections] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [announcements, setAnnouncements] = useState<string[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const baseURL = import.meta.env.VITE_API_URL || '';
 
@@ -29,15 +31,12 @@ function App() {
 
   const fetchHomeData = async () => {
     try {
-      // 1) Traer secciones (ya vienen ordenadas por `position` del backend)
       const sectionsRes = await axios.get(`${baseURL}/api/sections`);
       setSections(sectionsRes.data);
 
-      // 2) Traer categorías
       const categoriesRes = await axios.get(`${baseURL}/api/categories`);
       setCategories(categoriesRes.data);
 
-      // 3) Traer anuncios (si sigues usando /api/home para ello)
       const homeRes = await axios.get(`${baseURL}/api/home`);
       setAnnouncements(homeRes.data.announcements || []);
     } catch (error) {
@@ -65,14 +64,22 @@ function App() {
         element={
           <div className="min-h-screen bg-gray-50 relative">
             <AnnouncementBar announcements={announcements} />
-            <Navbar />
+            <Navbar onCartClick={() => setIsCartOpen(true)} />
             <HomeSections
               sections={sections}
               categories={categories}
-              addToCart={() => {}} // aún requerido por HomeSections, pero vacío
+              addToCart={() => {}}
             />
             <LocationSection />
             <Footer />
+            <Cart
+              isOpen={isCartOpen}
+              onClose={() => setIsCartOpen(false)}
+              items={items}
+              onRemove={removeFromCart}
+              onUpdateQuantity={updateQuantity}
+              onClearCart={clearCart}
+            />
           </div>
         }
       />

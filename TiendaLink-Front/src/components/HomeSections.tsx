@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import CategoryCard from './CategoryCard'
 import OfferCard from './OfferCard'
 import CircularCategory from './CircularCategory'
+import ProductModal from './ProductModal'
+import { useCart } from '../contexts/CartContext'
 
 interface HomeSectionsProps {
   sections: Array<{
@@ -28,13 +30,25 @@ interface HomeSectionsProps {
 const HomeSections: React.FC<HomeSectionsProps> = ({
   sections,
   categories,
-  addToCart
 }) => {
+  const { addToCart } = useCart()
+  const [selectedProduct, setSelectedProduct] = useState<any>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   let offerSectionIndex = 0
 
-  // 👉 Función para generar IDs limpios
   const getCleanId = (title: string) =>
     title.replace(/\s+/g, '-').toLowerCase()
+
+  const handleProductClick = (product: any) => {
+    setSelectedProduct(product)
+    setIsModalOpen(true)
+  }
+
+  const handleAddToCart = (product: any) => {
+    addToCart(product)
+    setIsModalOpen(false)
+  }
 
   return (
     <>
@@ -104,18 +118,21 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
               id={cleanId}
               className="container mx-auto px-4 py-8 max-w-7xl scroll-mt-24"
             >
-              <h2 className="text-2xl font-bold mb-8">{section.title}</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              <h2 className="text-2xl font-bold mb-8 text-purple-700">{section.title}</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {(section.items || []).map(prod => (
                   <CategoryCard
                     key={prod.id}
                     id={prod.id}
                     title={prod.title}
+                    description={prod.description || ''}
                     image={prod.image}
                     size={prod.size}
                     discount={prod.discount}
                     price={prod.price}
+                    featured={prod.featured}
                     onAddToCart={addToCart}
+                    onClick={() => handleProductClick(prod)}
                   />
                 ))}
               </div>
@@ -152,8 +169,18 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
 
         return null
       })}
+
+      {selectedProduct && (
+        <ProductModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          product={selectedProduct}
+          onAddToCart={() => handleAddToCart(selectedProduct)}
+        />
+      )}
     </>
   )
 }
 
 export default HomeSections
+
