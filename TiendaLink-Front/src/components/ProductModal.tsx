@@ -43,12 +43,12 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, product, o
               className="w-full h-80 object-cover rounded-t-2xl"
             />
             {product.featured && (
-              <span className="absolute top-4 left-4 bg-purple-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow">
+              <span className="absolute top-4 left-4 bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow">
                 PRODUCTO DESTACADO
               </span>
             )}
             {hasDiscount && (
-              <span className="absolute top-4 right-20 bg-yellow-400 text-purple-900 text-sm font-bold px-4 py-2 rounded-lg shadow">
+              <span className="absolute top-4 right-20 bg-red-500 text-white text-sm font-bold px-4 py-2 rounded-lg shadow">
                 ¡OFERTA!
               </span>
             )}
@@ -56,7 +56,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, product, o
 
           <div className="p-6 space-y-4">
             {product.category && (
-              <span className="inline-block bg-purple-100 text-purple-700 text-sm px-3 py-1 rounded-full font-medium">
+              <span className="inline-block bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-full font-medium">
                 {product.category}
               </span>
             )}
@@ -77,7 +77,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, product, o
                   </span>
                 </div>
               )}
-              <div className="text-4xl font-bold text-purple-700">
+              <div className="text-4xl font-bold text-blue-700">
                 ${finalPrice.toLocaleString('es-CL')}
               </div>
               <p className="text-sm text-green-600 font-medium flex items-center gap-1">
@@ -88,7 +88,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, product, o
 
             <button
               onClick={onAddToCart}
-              className="w-full bg-yellow-400 hover:bg-yellow-500 text-purple-900 font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+              className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
             >
               <ShoppingCart className="w-5 h-5" />
               Agregar al Carrito

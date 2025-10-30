@@ -91,7 +91,7 @@ const Cart: React.FC<CartProps> = ({
             return (
               <div
                 key={item.id}
-                className="bg-gradient-to-r from-purple-50 to-white p-4 rounded-xl border border-purple-100 shadow-sm"
+                className="bg-gradient-to-r from-blue-50 to-white p-4 rounded-xl border border-blue-100 shadow-sm"
               >
                 <div className="flex gap-3">
                   <img
@@ -101,31 +101,31 @@ const Cart: React.FC<CartProps> = ({
                   />
                   <div className="flex-1">
                     <h3 className="font-bold text-gray-900 text-sm">{item.title}</h3>
-                    <p className="text-xs text-purple-600 font-semibold mt-1">
+                    <p className="text-xs text-blue-600 font-semibold mt-1">
                       ${parseFloat(item.price.replace(/[$.]/g, '')).toLocaleString('es-CL')}
                       {parseInt(item.discount) > 0 && (
                         <span className="ml-2 text-red-600">-{item.discount}%</span>
                       )}
                     </p>
-                    <p className="text-sm font-bold text-purple-700 mt-1">
+                    <p className="text-sm font-bold text-blue-700 mt-1">
                       Subtotal: ${itemTotal.toLocaleString('es-CL')}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center justify-between mt-3">
-                  <div className="flex items-center gap-2 bg-white rounded-lg border border-purple-200 p-1">
+                  <div className="flex items-center gap-2 bg-white rounded-lg border border-blue-200 p-1">
                     <button
                       onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                      className="p-1.5 hover:bg-purple-100 rounded transition"
+                      className="p-1.5 hover:bg-blue-100 rounded transition"
                     >
-                      <Minus className="w-4 h-4 text-purple-600" />
+                      <Minus className="w-4 h-4 text-blue-600" />
                     </button>
-                    <span className="w-8 text-center font-bold text-purple-700">{item.quantity}</span>
+                    <span className="w-8 text-center font-bold text-blue-700">{item.quantity}</span>
                     <button
                       onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                      className="p-1.5 hover:bg-purple-100 rounded transition"
+                      className="p-1.5 hover:bg-blue-100 rounded transition"
                     >
-                      <Plus className="w-4 h-4 text-purple-600" />
+                      <Plus className="w-4 h-4 text-blue-600" />
                     </button>
                   </div>
                   <button
@@ -154,7 +154,7 @@ const Cart: React.FC<CartProps> = ({
           type="text"
           required
           placeholder="Ingresa tu nombre"
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition"
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
           value={customerInfo.name}
           onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
         />
@@ -168,7 +168,7 @@ const Cart: React.FC<CartProps> = ({
           type="tel"
           required
           placeholder="+56 9 1234 5678"
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition"
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
           value={customerInfo.phone}
           onChange={(e) => setCustomerInfo({ ...customerInfo, phone: e.target.value })}
         />
@@ -181,17 +181,17 @@ const Cart: React.FC<CartProps> = ({
         <textarea
           rows={3}
           placeholder="Calle, número, comuna..."
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition resize-none"
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition resize-none"
           value={customerInfo.address}
           onChange={(e) => setCustomerInfo({ ...customerInfo, address: e.target.value })}
         />
       </div>
 
       <div className="pt-4 border-t border-gray-200">
-        <div className="bg-purple-50 p-4 rounded-lg mb-4">
+        <div className="bg-blue-50 p-4 rounded-lg mb-4">
           <div className="flex justify-between items-center">
             <span className="text-lg font-bold text-gray-700">Total:</span>
-            <span className="text-2xl font-bold text-purple-700">
+            <span className="text-2xl font-bold text-blue-700">
               ${total.toLocaleString('es-CL')}
             </span>
           </div>
@@ -230,7 +230,7 @@ const Cart: React.FC<CartProps> = ({
       >
         <div className="p-6 h-full flex flex-col">
           <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
-            <h2 className="text-2xl font-bold text-purple-700">
+            <h2 className="text-2xl font-bold text-blue-700">
               {step === 'cart' ? 'Mi Carrito' : 'Datos de Contacto'}
             </h2>
             <button
@@ -246,17 +246,17 @@ const Cart: React.FC<CartProps> = ({
               {renderCartItems()}
               {items.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-gray-200 space-y-3">
-                  <div className="bg-purple-50 p-4 rounded-lg">
+                  <div className="bg-blue-50 p-4 rounded-lg">
                     <div className="flex justify-between items-center">
                       <span className="text-lg font-bold text-gray-700">Total:</span>
-                      <span className="text-2xl font-bold text-purple-700">
+                      <span className="text-2xl font-bold text-blue-700">
                         ${total.toLocaleString('es-CL')}
                       </span>
                     </div>
                   </div>
                   <button
                     onClick={() => setStep('info')}
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-xl transition-all shadow-md hover:shadow-lg"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-md hover:shadow-lg"
                   >
                     Continuar con la Cotización
                   </button>

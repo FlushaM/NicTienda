@@ -51,13 +51,13 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
         />
 
         {hasDiscount && (
-          <span className="absolute top-3 left-3 bg-yellow-400 text-purple-900 text-xs font-bold px-3 py-1 rounded-lg shadow-md">
+          <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-lg shadow-md">
             ¡OFERTA!
           </span>
         )}
 
         {featured && (
-          <span className="absolute bottom-3 left-3 bg-purple-600 text-white text-xs font-semibold px-3 py-1 rounded-lg shadow-md">
+          <span className="absolute bottom-3 left-3 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-lg shadow-md">
             PRODUCTO DESTACADO
           </span>
         )}
@@ -79,7 +79,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
               </span>
             </div>
           )}
-          <div className="text-2xl font-bold text-purple-700">
+          <div className="text-2xl font-bold text-blue-700">
             ${finalPrice.toLocaleString('es-CL')}
           </div>
         </div>
@@ -87,14 +87,14 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
         <div className="flex gap-2">
           <button
             onClick={onClick}
-            className="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2.5 px-4 rounded-lg transition-all text-sm"
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg transition-all text-sm"
           >
             VISITA NUESTRA TIENDA
           </button>
 
           <button
             onClick={handleAddToCart}
-            className="bg-yellow-400 hover:bg-yellow-500 text-purple-900 font-bold p-2.5 rounded-lg transition-all shadow-sm hover:shadow-md"
+            className="bg-red-500 hover:bg-red-600 text-white font-bold p-2.5 rounded-lg transition-all shadow-sm hover:shadow-md"
             title="Agregar al carrito"
           >
             <ShoppingCart className="w-5 h-5" />
