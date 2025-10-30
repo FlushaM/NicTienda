@@ -34,11 +34,11 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
   const { addToCart } = useCart()
   const [selectedProduct, setSelectedProduct] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [priceFilter, setPriceFilter] = useState<'all' | 'low' | 'medium' | 'high'>('all')
-  const [discountFilter, setDiscountFilter] = useState(false)
-  const [featuredFilter, setFeaturedFilter] = useState(false)
+  const [selectedSectionId, setSelectedSectionId] = useState<string>('all')
 
   let offerSectionIndex = 0
+  const productSections = sections.filter(s => s.type === 'products')
+  const hasProductSections = productSections.length > 0
 
   const getCleanId = (title: string) =>
     title.replace(/\s+/g, '-').toLowerCase()
@@ -53,28 +53,42 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
     setIsModalOpen(false)
   }
 
-  const filterProducts = (products: any[]) => {
-    return products.filter(prod => {
-      const price = parseFloat(prod.price.replace(/[$.]/g, ''))
-      const discount = parseInt(prod.discount) || 0
-
-      // Price filter
-      if (priceFilter === 'low' && price > 10000) return false
-      if (priceFilter === 'medium' && (price <= 10000 || price > 50000)) return false
-      if (priceFilter === 'high' && price <= 50000) return false
-
-      // Discount filter
-      if (discountFilter && discount === 0) return false
-
-      // Featured filter
-      if (featuredFilter && !prod.featured) return false
-
-      return true
-    })
-  }
-
   return (
     <>
+      {/* Mobile Filter - Horizontal Banner (visible only on mobile) */}
+      {hasProductSections && (
+        <div className="lg:hidden bg-white border-b border-gray-200 sticky top-[140px] z-30 shadow-sm">
+          <div className="container mx-auto px-4 py-3 max-w-7xl">
+            <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide">
+              <span className="text-xs font-semibold text-gray-700 whitespace-nowrap">Filtrar:</span>
+              <button
+                onClick={() => setSelectedSectionId('all')}
+                className={`px-3 py-1.5 rounded-lg font-medium text-xs whitespace-nowrap transition-all ${
+                  selectedSectionId === 'all'
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                Todos
+              </button>
+              {productSections.map(section => (
+                <button
+                  key={section.id}
+                  onClick={() => setSelectedSectionId(section.id)}
+                  className={`px-3 py-1.5 rounded-lg font-medium text-xs whitespace-nowrap transition-all ${
+                    selectedSectionId === section.id
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {section.title}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {sections.map(section => {
         const cleanId = getCleanId(section.title)
 
@@ -133,9 +147,13 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
           )
         }
 
-        // 🟣 Productos → compactos con filtro
+        // 🟣 Productos → con filtro responsive
         if (section.type === 'products') {
-          const filteredProducts = filterProducts(section.items || [])
+          // Filter by selected section
+          if (selectedSectionId !== 'all' && selectedSectionId !== section.id) {
+            return null
+          }
+
           return (
             <section
               key={section.id}
@@ -143,98 +161,34 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
               className="container mx-auto px-4 py-8 max-w-7xl scroll-mt-24"
             >
               <div className="flex gap-6">
-                {/* Sidebar Filter */}
+                {/* Desktop Sidebar Filter */}
                 <div className="hidden lg:block w-64 flex-shrink-0">
                   <div className="sticky top-24 bg-white rounded-xl shadow-md p-6 border border-gray-200">
-                    <h3 className="text-lg font-bold text-blue-700 mb-4">Filtros</h3>
-
-                    <div className="space-y-6">
-                      {/* Price Filter */}
-                      <div>
-                        <h4 className="text-sm font-semibold text-gray-700 mb-3">Precio</h4>
-                        <div className="space-y-2">
-                          <label className="flex items-center cursor-pointer">
-                            <input
-                              type="radio"
-                              name="price"
-                              checked={priceFilter === 'all'}
-                              onChange={() => setPriceFilter('all')}
-                              className="w-4 h-4 text-blue-600 focus:ring-blue-500"
-                            />
-                            <span className="ml-2 text-sm text-gray-700">Todos</span>
-                          </label>
-                          <label className="flex items-center cursor-pointer">
-                            <input
-                              type="radio"
-                              name="price"
-                              checked={priceFilter === 'low'}
-                              onChange={() => setPriceFilter('low')}
-                              className="w-4 h-4 text-blue-600 focus:ring-blue-500"
-                            />
-                            <span className="ml-2 text-sm text-gray-700">Hasta $10.000</span>
-                          </label>
-                          <label className="flex items-center cursor-pointer">
-                            <input
-                              type="radio"
-                              name="price"
-                              checked={priceFilter === 'medium'}
-                              onChange={() => setPriceFilter('medium')}
-                              className="w-4 h-4 text-blue-600 focus:ring-blue-500"
-                            />
-                            <span className="ml-2 text-sm text-gray-700">$10.000 - $50.000</span>
-                          </label>
-                          <label className="flex items-center cursor-pointer">
-                            <input
-                              type="radio"
-                              name="price"
-                              checked={priceFilter === 'high'}
-                              onChange={() => setPriceFilter('high')}
-                              className="w-4 h-4 text-blue-600 focus:ring-blue-500"
-                            />
-                            <span className="ml-2 text-sm text-gray-700">Más de $50.000</span>
-                          </label>
-                        </div>
-                      </div>
-
-                      {/* Discount Filter */}
-                      <div className="pt-4 border-t border-gray-200">
-                        <label className="flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={discountFilter}
-                            onChange={(e) => setDiscountFilter(e.target.checked)}
-                            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                          />
-                          <span className="ml-2 text-sm font-semibold text-gray-700">Solo ofertas</span>
-                        </label>
-                      </div>
-
-                      {/* Featured Filter */}
-                      <div className="pt-4 border-t border-gray-200">
-                        <label className="flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={featuredFilter}
-                            onChange={(e) => setFeaturedFilter(e.target.checked)}
-                            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                          />
-                          <span className="ml-2 text-sm font-semibold text-gray-700">Destacados</span>
-                        </label>
-                      </div>
-
-                      {/* Clear Filters */}
-                      {(priceFilter !== 'all' || discountFilter || featuredFilter) && (
+                    <h3 className="text-lg font-bold text-blue-700 mb-4">Categorías</h3>
+                    <div className="space-y-2">
+                      <button
+                        onClick={() => setSelectedSectionId('all')}
+                        className={`w-full text-left px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
+                          selectedSectionId === 'all'
+                            ? 'bg-blue-600 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        Todos los productos
+                      </button>
+                      {productSections.map(sec => (
                         <button
-                          onClick={() => {
-                            setPriceFilter('all')
-                            setDiscountFilter(false)
-                            setFeaturedFilter(false)
-                          }}
-                          className="w-full mt-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 rounded-lg transition text-sm"
+                          key={sec.id}
+                          onClick={() => setSelectedSectionId(sec.id)}
+                          className={`w-full text-left px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
+                            selectedSectionId === sec.id
+                              ? 'bg-blue-600 text-white shadow-md'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          }`}
                         >
-                          Limpiar filtros
+                          {sec.title}
                         </button>
-                      )}
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -242,30 +196,23 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
                 {/* Products Grid */}
                 <div className="flex-1">
                   <h2 className="text-2xl font-bold mb-6 text-blue-700">{section.title}</h2>
-                  {filteredProducts.length === 0 ? (
-                    <div className="text-center py-12">
-                      <p className="text-gray-500 text-lg">No se encontraron productos con estos filtros</p>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                      {filteredProducts.map(prod => (
-                  <CategoryCard
-                    key={prod.id}
-                    id={prod.id}
-                    title={prod.title}
-                    description={prod.description || ''}
-                    image={prod.image}
-                    size={prod.size}
-                    discount={prod.discount}
-                    price={prod.price}
-                    featured={prod.featured}
-                    onAddToCart={addToCart}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {(section.items || []).map(prod => (
+                      <CategoryCard
+                        key={prod.id}
+                        id={prod.id}
+                        title={prod.title}
+                        description={prod.description || ''}
+                        image={prod.image}
+                        size={prod.size}
+                        discount={prod.discount}
+                        price={prod.price}
+                        featured={prod.featured}
+                        onAddToCart={addToCart}
                         onClick={() => handleProductClick(prod)}
                       />
                     ))}
                   </div>
-                  )
-                  }
                 </div>
               </div>
             </section>
@@ -315,3 +262,4 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
 }
 
 export default HomeSections
+
