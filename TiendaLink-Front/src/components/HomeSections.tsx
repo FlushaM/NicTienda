@@ -3,16 +3,20 @@ import CategoryCard from './CategoryCard'
 import OfferCard from './OfferCard'
 import CircularCategory from './CircularCategory'
 import ProductModal from './ProductModal'
+import HeroBanner from './HeroBanner'
+import VideoGallery from './VideoGallery'
 import { useCart } from '../contexts/CartContext'
 
 interface HomeSectionsProps {
   sections: Array<{
     id: string
     title: string
-    type: 'products' | 'offers' | 'category'
+    type: 'products' | 'offers' | 'category' | 'hero' | 'videos'
     layout: 'grid' | 'carousel' | 'featured'
     items?: any[]
     offers?: any[]
+    banners?: any[]
+    videos?: any[]
   }>
   categories: Array<{
     id: string
@@ -246,6 +250,32 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
           )
         }
 
+        // 🟢 Hero Banner con carrusel
+        if (section.type === 'hero') {
+          return (
+            <section
+              key={section.id}
+              id={cleanId}
+              className="scroll-mt-24"
+            >
+              <HeroBanner banners={section.banners || []} />
+            </section>
+          )
+        }
+
+        // 🟢 Videos verticales
+        if (section.type === 'videos') {
+          return (
+            <section
+              key={section.id}
+              id={cleanId}
+              className="scroll-mt-24"
+            >
+              <VideoGallery videos={section.videos || []} title={section.title} />
+            </section>
+          )
+        }
+
         return null
       })}
 
@@ -262,4 +292,3 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
 }
 
 export default HomeSections
-

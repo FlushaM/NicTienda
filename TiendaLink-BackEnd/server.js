@@ -15,6 +15,8 @@ const categoriesRoutes = require('./src/routes/categories');
 const categoryItemsRoutes = require('./src/routes/categoryItems');
 const ordersRoutes = require('./src/routes/orders'); // ✔️ Ruta de pedidos
 const offersRoutes     = require('./src/routes/offers');
+const bannersRoutes = require('./src/routes/banners');
+const videosRoutes = require('./src/routes/videos');
 
 const app = express();
 
@@ -53,6 +55,8 @@ app.use('/api/categories', categoriesRoutes);
 app.use('/api/category-items', categoryItemsRoutes);
 app.use('/api/orders', ordersRoutes); // ✔️ Montado una sola vez
 app.use('/api/offers',       offersRoutes);
+app.use('/api/banners', bannersRoutes);
+app.use('/api/videos', videosRoutes);
 
 // Rutas de prueba
 app.get('/api/test', (req, res) => {

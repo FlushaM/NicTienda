@@ -13,6 +13,8 @@ const SiteSetting     = require('./SiteSetting')(sequelize, DataTypes);
 const Section         = require('./Section')(sequelize, DataTypes);
 const CategoryItem    = require('./CategoryItem')(sequelize, DataTypes);
 const Offer           = require('./Offer')(sequelize, DataTypes);
+const Banner          = require('./Banner')(sequelize, DataTypes);
+const Video           = require('./Video')(sequelize, DataTypes);
 
 // Definir asociaciones
 
@@ -76,6 +78,26 @@ Offer.belongsTo(Section, {
   as: 'section'
 });
 
+// 7. Section → Banner
+Section.hasMany(Banner, {
+  foreignKey: 'section_id',
+  as: 'banners'
+});
+Banner.belongsTo(Section, {
+  foreignKey: 'section_id',
+  as: 'section'
+});
+
+// 8. Section → Video
+Section.hasMany(Video, {
+  foreignKey: 'section_id',
+  as: 'videos'
+});
+Video.belongsTo(Section, {
+  foreignKey: 'section_id',
+  as: 'section'
+});
+
 // Exportar todo
 module.exports = {
   sequelize,
@@ -87,5 +109,7 @@ module.exports = {
   SiteSetting,
   Section,
   CategoryItem,
-  Offer
+  Offer,
+  Banner,
+  Video
 };

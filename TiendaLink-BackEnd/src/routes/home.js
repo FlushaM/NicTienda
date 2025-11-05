@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Section, Product, Category, CategoryItem } = require('../models');
+const { Section, Product, Category, CategoryItem, Banner, Video } = require('../models');
 
 // GET que devuelve secciones con sus productos (alias "items") y categorías con sus cards circulares
 router.get('/', async (_req, res) => {
@@ -10,6 +10,14 @@ router.get('/', async (_req, res) => {
         {
           model: Product,
           as: 'items'
+        },
+        {
+          model: Banner,
+          as: 'banners'
+        },
+        {
+          model: Video,
+          as: 'videos'
         }
       ]
     });
