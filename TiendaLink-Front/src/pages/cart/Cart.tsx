@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X, Plus, Minus, Send, Trash2 } from 'lucide-react';
 import { CartItem } from '../../types';
 
-const WHATSAPP_NUMBER = '56938761485';
+const WHATSAPP_NUMBER = '56950351870';
 
 interface CartProps {
   isOpen: boolean;
