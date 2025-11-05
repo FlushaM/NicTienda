@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
 import VideoGallery from './VideoGallery';
 
 interface Video {
@@ -7,26 +6,31 @@ interface Video {
   title: string;
   videoUrl: string;
   thumbnailUrl?: string;
-  position: number;
 }
 
 const VideoSection: React.FC = () => {
-  const [videos, setVideos] = useState<Video[]>([]);
-  const baseURL = import.meta.env.VITE_API_URL || '';
-
-  useEffect(() => {
-    fetchVideos();
-  }, []);
-
-  const fetchVideos = async () => {
-    try {
-      const res = await axios.get(`${baseURL}/api/videos`);
-      const sorted = res.data.sort((a: Video, b: Video) => a.position - b.position);
-      setVideos(sorted);
-    } catch (error) {
-      console.error('Error al obtener videos:', error);
-    }
-  };
+  const videos: Video[] = [
+    {
+      id: 1,
+      title: 'Cómo Usar Nuestros Productos',
+      videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    },
+    {
+      id: 2,
+      title: 'Lo Que Dicen Nuestros Clientes',
+      videoUrl: 'https://www.youtube.com/watch?v=9bZkp7q19f0',
+    },
+    {
+      id: 3,
+      title: 'Detrás de Cámaras',
+      videoUrl: 'https://www.youtube.com/watch?v=K4TOrB7at0Y',
+    },
+    {
+      id: 4,
+      title: 'Unboxing de Productos',
+      videoUrl: 'https://www.youtube.com/watch?v=ysz5S6PUM-U',
+    },
+  ];
 
   if (videos.length === 0) return null;
 

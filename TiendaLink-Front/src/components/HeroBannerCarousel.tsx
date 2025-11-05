@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import axios from 'axios';
 
 interface Banner {
   id: string;
@@ -9,17 +8,37 @@ interface Banner {
   buttonText?: string;
   buttonLink?: string;
   image: string;
-  position: number;
 }
 
 const HeroBannerCarousel: React.FC = () => {
-  const [banners, setBanners] = useState<Banner[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const baseURL = import.meta.env.VITE_API_URL || '';
 
-  useEffect(() => {
-    fetchBanners();
-  }, []);
+  const banners: Banner[] = [
+    {
+      id: '1',
+      title: '¡Grandes Ofertas de Temporada!',
+      subtitle: 'Descuentos de hasta 50% en productos seleccionados',
+      buttonText: 'Ver Ofertas',
+      buttonLink: '#ofertas',
+      image: 'https://images.pexels.com/photos/974964/pexels-photo-974964.jpeg?auto=compress&cs=tinysrgb&w=1920',
+    },
+    {
+      id: '2',
+      title: 'Nuevos Productos Disponibles',
+      subtitle: 'Descubre nuestra última colección',
+      buttonText: 'Explorar Ahora',
+      buttonLink: '#productos',
+      image: 'https://images.pexels.com/photos/1267327/pexels-photo-1267327.jpeg?auto=compress&cs=tinysrgb&w=1920',
+    },
+    {
+      id: '3',
+      title: 'Envío Gratis',
+      subtitle: 'En todas tus compras mayores a $50',
+      buttonText: 'Comprar Ahora',
+      buttonLink: '#productos',
+      image: 'https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=1920',
+    },
+  ];
 
   useEffect(() => {
     if (banners.length > 1) {
@@ -29,16 +48,6 @@ const HeroBannerCarousel: React.FC = () => {
       return () => clearInterval(timer);
     }
   }, [banners.length]);
-
-  const fetchBanners = async () => {
-    try {
-      const res = await axios.get(`${baseURL}/api/banners`);
-      const sorted = res.data.sort((a: Banner, b: Banner) => a.position - b.position);
-      setBanners(sorted);
-    } catch (error) {
-      console.error('Error al obtener banners:', error);
-    }
-  };
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % banners.length);
