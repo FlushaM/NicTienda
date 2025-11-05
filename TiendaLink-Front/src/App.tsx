@@ -1,4 +1,3 @@
-// src/App.tsx
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
@@ -13,6 +12,8 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import LocationSection from './components/LocationSection';
 import Cart from './pages/cart/Cart';
+import HeroBannerCarousel from './components/HeroBannerCarousel';
+import VideoSection from './components/VideoSection';
 
 function App() {
   const { user } = useAuth();
@@ -65,11 +66,13 @@ function App() {
           <div className="min-h-screen bg-gray-50 relative">
             <AnnouncementBar announcements={announcements} />
             <Navbar onCartClick={() => setIsCartOpen(true)} />
+            <HeroBannerCarousel />
             <HomeSections
               sections={sections}
               categories={categories}
               addToCart={() => {}}
             />
+            <VideoSection />
             <LocationSection />
             <Footer />
             <Cart
