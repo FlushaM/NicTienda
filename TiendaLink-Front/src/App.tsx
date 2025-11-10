@@ -6,6 +6,7 @@ import { useCart } from './contexts/CartContext';
 
 import AdminDashboard from './pages/admin/AdminDashboard';
 import Login from './pages/auth/Login';
+import Shop from './pages/shop/Shop';
 import AnnouncementBar from './components/AnnouncementBar';
 import HomeSections from './components/HomeSections';
 import Navbar from './components/Navbar';
@@ -74,6 +75,26 @@ function App() {
             />
             <VideoSection />
             <LocationSection />
+            <Footer />
+            <Cart
+              isOpen={isCartOpen}
+              onClose={() => setIsCartOpen(false)}
+              items={items}
+              onRemove={removeFromCart}
+              onUpdateQuantity={updateQuantity}
+              onClearCart={clearCart}
+            />
+          </div>
+        }
+      />
+
+      <Route
+        path="/tienda"
+        element={
+          <div className="min-h-screen bg-gray-50 relative">
+            <AnnouncementBar announcements={announcements} />
+            <Navbar onCartClick={() => setIsCartOpen(true)} />
+            <Shop />
             <Footer />
             <Cart
               isOpen={isCartOpen}
