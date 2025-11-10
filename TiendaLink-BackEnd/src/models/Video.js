@@ -7,14 +7,15 @@ module.exports = (sequelize, DataTypes) => {
     },
     sectionId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       field: 'section_id'
     },
     title: {
-      type: DataTypes.STRING(200)
+      type: DataTypes.STRING,
+      allowNull: false
     },
     videoUrl: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
       allowNull: false,
       field: 'video_url'
     },
