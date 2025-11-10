@@ -7,66 +7,75 @@ exports.getAllVideos = async (req, res) => {
     });
     res.json(videos);
   } catch (error) {
-    console.error(error);
+    console.error('Error al obtener videos:', error);
     res.status(500).json({ error: 'Error al obtener videos' });
   }
 };
 
-exports.getVideosBySection = async (req, res) => {
+exports.getVideoById = async (req, res) => {
   try {
-    const { sectionId } = req.params;
-    const videos = await Video.findAll({
-      where: { sectionId },
-      order: [['position', 'ASC']]
-    });
-    res.json(videos);
+    const video = await Video.findByPk(req.params.id);
+    if (!video) {
+      return res.status(404).json({ error: 'Video no encontrado' });
+    }
+    res.json(video);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al obtener videos' });
+    console.error('Error al obtener video:', error);
+    res.status(500).json({ error: 'Error al obtener video' });
   }
 };
 
 exports.createVideo = async (req, res) => {
   try {
-    const video = await Video.create(req.body);
+    const { sectionId, title, videoUrl, position } = req.body;
+    const video = await Video.create({
+      sectionId,
+      title,
+      videoUrl,
+      position: position || 0
+    });
     res.status(201).json(video);
   } catch (error) {
-    console.error(error);
+    console.error('Error al crear video:', error);
     res.status(500).json({ error: 'Error al crear video' });
   }
 };
 
 exports.updateVideo = async (req, res) => {
   try {
-    const { id } = req.params;
-    const [updated] = await Video.update(req.body, {
-      where: { id }
-    });
-    if (updated) {
-      const video = await Video.findByPk(id);
-      res.json(video);
-    } else {
-      res.status(404).json({ error: 'Video no encontrado' });
+    const { sectionId, title, videoUrl, position } = req.body;
+    const video = await Video.findByPk(req.params.id);
+    
+    if (!video) {
+      return res.status(404).json({ error: 'Video no encontrado' });
     }
+
+    await video.update({
+      sectionId,
+      title,
+      videoUrl,
+      position
+    });
+
+    res.json(video);
   } catch (error) {
-    console.error(error);
+    console.error('Error al actualizar video:', error);
     res.status(500).json({ error: 'Error al actualizar video' });
   }
 };
 
 exports.deleteVideo = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deleted = await Video.destroy({
-      where: { id }
-    });
-    if (deleted) {
-      res.json({ message: 'Video eliminado' });
-    } else {
-      res.status(404).json({ error: 'Video no encontrado' });
+    const video = await Video.findByPk(req.params.id);
+    
+    if (!video) {
+      return res.status(404).json({ error: 'Video no encontrado' });
     }
+
+    await video.destroy();
+    res.json({ message: 'Video eliminado correctamente' });
   } catch (error) {
-    console.error(error);
+    console.error('Error al eliminar video:', error);
     res.status(500).json({ error: 'Error al eliminar video' });
   }
 };

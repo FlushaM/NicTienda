@@ -7,20 +7,17 @@ module.exports = (sequelize, DataTypes) => {
     },
     sectionId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       field: 'section_id'
     },
     title: {
-      type: DataTypes.STRING(200)
+      type: DataTypes.STRING,
+      allowNull: false
     },
     videoUrl: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
       allowNull: false,
       field: 'video_url'
-    },
-    thumbnailUrl: {
-      type: DataTypes.TEXT,
-      field: 'thumbnail_url'
     },
     position: {
       type: DataTypes.INTEGER,
@@ -30,6 +27,13 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'videos',
     timestamps: false
   });
+
+  Video.associate = (models) => {
+    Video.belongsTo(models.Section, { 
+      foreignKey: 'section_id',
+      as: 'section'
+    });
+  };
 
   return Video;
 };
