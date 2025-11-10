@@ -1,21 +1,35 @@
 const express = require('express');
 const router = express.Router();
-const { Section, Product, Banner, Video } = require('../models');
+const { Section, Product, Category, CategoryItem, Banner, Video } = require('../models');
 
-router.get('/', async (req, res) => {
+// GET que devuelve secciones con sus productos (alias "items") y categorías con sus cards circulares
+router.get('/', async (_req, res) => {
   try {
     const sections = await Section.findAll({
       include: [
-        { model: Product, as: 'items' },
-        { model: Banner, as: 'banners' },
-        { 
-          model: Video, 
-          as: 'videos',
-          attributes: ['id', 'sectionId', 'title', 'videoUrl', 'position']
+        {
+          model: Product,
+          as: 'items'
+        },
+        {
+          model: Banner,
+          as: 'banners'
+        },
+        {
+          model: Video,
+          as: 'videos'
         }
       ]
     });
 
+    const categories = await Category.findAll({
+      include: [
+        {
+          model: CategoryItem,
+          as: 'categoryItems'
+        }
+      ]
+    });
 
     const announcements = [
       "Revisa tu catálogo online 📱",
