@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import CategoryCard from './CategoryCard'
 import OfferCard from './OfferCard'
 import CircularCategory from './CircularCategory'
@@ -38,11 +38,30 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
   const { addToCart } = useCart()
   const [selectedProduct, setSelectedProduct] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedSectionId, setSelectedSectionId] = useState<string>('all')
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('all')
 
   let offerSectionIndex = 0
   const productSections = sections.filter(s => s.type === 'products')
   const hasProductSections = productSections.length > 0
+
+  // Consolidar todos los productos de todas las secciones
+  const allProducts = useMemo(() => {
+    return productSections.flatMap(section =>
+      (section.items || []).map(item => ({
+        ...item,
+        categoryId: section.id,
+        categoryTitle: section.title
+      }))
+    )
+  }, [productSections])
+
+  // Filtrar productos según la categoría seleccionada
+  const filteredProducts = useMemo(() => {
+    if (selectedCategoryId === 'all') {
+      return allProducts
+    }
+    return allProducts.filter(product => product.categoryId === selectedCategoryId)
+  }, [allProducts, selectedCategoryId])
 
   const getCleanId = (title: string) =>
     title.replace(/\s+/g, '-').toLowerCase()
@@ -59,16 +78,16 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
 
   return (
     <>
-      {/* Mobile Filter - Horizontal Banner (visible only on mobile) */}
+      {/* Filtro Global - Visible en Mobile (Sticky) */}
       {hasProductSections && (
         <div className="lg:hidden bg-white border-b border-gray-200 sticky top-[140px] z-30 shadow-sm">
           <div className="container mx-auto px-4 py-3 max-w-7xl">
             <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide">
               <span className="text-xs font-semibold text-gray-700 whitespace-nowrap">Filtrar:</span>
               <button
-                onClick={() => setSelectedSectionId('all')}
+                onClick={() => setSelectedCategoryId('all')}
                 className={`px-3 py-1.5 rounded-lg font-medium text-xs whitespace-nowrap transition-all ${
-                  selectedSectionId === 'all'
+                  selectedCategoryId === 'all'
                     ? 'bg-blue-600 text-white shadow-md'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
@@ -78,9 +97,9 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
               {productSections.map(section => (
                 <button
                   key={section.id}
-                  onClick={() => setSelectedSectionId(section.id)}
+                  onClick={() => setSelectedCategoryId(section.id)}
                   className={`px-3 py-1.5 rounded-lg font-medium text-xs whitespace-nowrap transition-all ${
-                    selectedSectionId === section.id
+                    selectedCategoryId === section.id
                       ? 'bg-blue-600 text-white shadow-md'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
@@ -105,7 +124,7 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
             return (
               <section
                 key={section.id}
-                id={cleanId} // 👈 ID para scroll
+                id={cleanId}
                 className="py-16 bg-gradient-to-r from-violet-50 via-purple-50 to-violet-50 scroll-mt-24"
               >
                 <div className="mx-auto px-4 max-w-[1800px]">
@@ -118,7 +137,7 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
                         title={off.title}
                         image={off.image}
                         size={off.size}
-                        link={off.link} // 👈 Aquí puedes poner #id
+                        link={off.link}
                       />
                     ))}
                   </div>
@@ -146,78 +165,6 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
                     link={off.link}
                   />
                 ))}
-              </div>
-            </section>
-          )
-        }
-
-        // 🟣 Productos → con filtro responsive
-        if (section.type === 'products') {
-          // Filter by selected section
-          if (selectedSectionId !== 'all' && selectedSectionId !== section.id) {
-            return null
-          }
-
-          return (
-            <section
-              key={section.id}
-              id={cleanId}
-              className="container mx-auto px-4 py-8 max-w-7xl scroll-mt-24"
-            >
-              <div className="flex gap-6">
-                {/* Desktop Sidebar Filter */}
-                <div className="hidden lg:block w-64 flex-shrink-0">
-                  <div className="sticky top-24 bg-white rounded-xl shadow-md p-6 border border-gray-200">
-                    <h3 className="text-lg font-bold text-blue-700 mb-4">Categorías</h3>
-                    <div className="space-y-2">
-                      <button
-                        onClick={() => setSelectedSectionId('all')}
-                        className={`w-full text-left px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
-                          selectedSectionId === 'all'
-                            ? 'bg-blue-600 text-white shadow-md'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
-                      >
-                        Todos los productos
-                      </button>
-                      {productSections.map(sec => (
-                        <button
-                          key={sec.id}
-                          onClick={() => setSelectedSectionId(sec.id)}
-                          className={`w-full text-left px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
-                            selectedSectionId === sec.id
-                              ? 'bg-blue-600 text-white shadow-md'
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                          }`}
-                        >
-                          {sec.title}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Products Grid */}
-                <div className="flex-1">
-                  <h2 className="text-2xl font-bold mb-6 text-blue-700">{section.title}</h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {(section.items || []).map(prod => (
-                      <CategoryCard
-                        key={prod.id}
-                        id={prod.id}
-                        title={prod.title}
-                        description={prod.description || ''}
-                        image={prod.image}
-                        size={prod.size}
-                        discount={prod.discount}
-                        price={prod.price}
-                        featured={prod.featured}
-                        onAddToCart={addToCart}
-                        onClick={() => handleProductClick(prod)}
-                      />
-                    ))}
-                  </div>
-                </div>
               </div>
             </section>
           )
@@ -278,6 +225,83 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
 
         return null
       })}
+
+      {/* Sección Única de Productos con Filtro Global */}
+      {hasProductSections && (
+        <section id="productos" className="container mx-auto px-4 py-8 max-w-7xl scroll-mt-24">
+          <div className="flex gap-6">
+            {/* Sidebar Desktop - Filtro Sticky */}
+            <div className="hidden lg:block w-64 flex-shrink-0">
+              <div className="sticky top-24 bg-white rounded-xl shadow-md p-6 border border-gray-200">
+                <h3 className="text-lg font-bold text-blue-700 mb-4">Categorías</h3>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => setSelectedCategoryId('all')}
+                    className={`w-full text-left px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
+                      selectedCategoryId === 'all'
+                        ? 'bg-blue-600 text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    Todos los productos
+                  </button>
+                  {productSections.map(sec => (
+                    <button
+                      key={sec.id}
+                      onClick={() => setSelectedCategoryId(sec.id)}
+                      className={`w-full text-left px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
+                        selectedCategoryId === sec.id
+                          ? 'bg-blue-600 text-white shadow-md'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      {sec.title}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Grid de Productos */}
+            <div className="flex-1">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-blue-700">
+                  {selectedCategoryId === 'all'
+                    ? 'Todos los Productos'
+                    : productSections.find(s => s.id === selectedCategoryId)?.title || 'Productos'}
+                </h2>
+                <p className="text-sm text-gray-600 mt-1">
+                  {filteredProducts.length} producto{filteredProducts.length !== 1 ? 's' : ''} disponible{filteredProducts.length !== 1 ? 's' : ''}
+                </p>
+              </div>
+
+              {filteredProducts.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredProducts.map(prod => (
+                    <CategoryCard
+                      key={prod.id}
+                      id={prod.id}
+                      title={prod.title}
+                      description={prod.description || ''}
+                      image={prod.image}
+                      size={prod.size}
+                      discount={prod.discount}
+                      price={prod.price}
+                      featured={prod.featured}
+                      onAddToCart={addToCart}
+                      onClick={() => handleProductClick(prod)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-gray-500 text-lg">No hay productos disponibles en esta categoría</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
 
       {selectedProduct && (
         <ProductModal
