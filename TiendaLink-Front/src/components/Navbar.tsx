@@ -34,7 +34,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick }) => {
       <div className="w-full bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 text-white py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <img
-            src="https://github.com/FlushaM/imagenes-matias/blob/main/WhatsApp%20Image%202025-08-13%20at%204.17.28%20PM.jpeg?raw=true"
+            src="https://github.com/FlushaM/imagenes-matias/blob/main/WhatsApp%20Image%202025-11-11%20at%205.42.53%20PM.jpeg?raw=true"
             alt="Logo"
             className="mx-auto h-20 w-auto mb-3"
           />
