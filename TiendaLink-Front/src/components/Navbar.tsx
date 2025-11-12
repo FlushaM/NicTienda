@@ -46,9 +46,9 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick }) => {
       <div className="bg-white border-t border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center gap-8 py-3 text-sm font-medium text-gray-700">
-            <a href="#libreria" className="hover:text-blue-700 transition-colors">Librería</a>
-            <a href="#helados" className="hover:text-blue-700 transition-colors">Heladería</a>
-            <a href="#bebidas-alternativas" className="hover:text-blue-700 transition-colors">Bebidas</a>
+            <a href="#detergentes" className="hover:text-blue-700 transition-colors">Detergentes</a>
+            <a href="#lavalozas" className="hover:text-blue-700 transition-colors">Lavalozas</a>
+            <a href="#limpieza-automotriz" className="hover:text-blue-700 transition-colors">Limpieza Automotriz</a>
             <a href="#localizacion" className="hover:text-blue-700 transition-colors">Locales y Contacto</a>
           </div>
         </div>

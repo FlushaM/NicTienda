@@ -80,9 +80,9 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
     <>
       {/* Filtro Global - Visible en Mobile (Sticky) */}
       {hasProductSections && (
-        <div className="lg:hidden bg-white border-b border-gray-200 sticky top-[140px] z-30 shadow-sm">
-          <div className="container mx-auto px-4 py-3 max-w-7xl">
-            <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide">
+        <div className="lg:hidden bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+          <div className="px-4 py-3">
+            <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide pb-1">
               <span className="text-xs font-semibold text-gray-700 whitespace-nowrap">Filtrar:</span>
               <button
                 onClick={() => setSelectedCategoryId('all')}
@@ -276,7 +276,7 @@ const HomeSections: React.FC<HomeSectionsProps> = ({
               </div>
 
               {filteredProducts.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {filteredProducts.map(prod => (
                     <CategoryCard
                       key={prod.id}

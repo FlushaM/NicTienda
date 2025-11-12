@@ -19,7 +19,7 @@ const AnnouncementBar: React.FC<AnnouncementBarProps> = ({ announcements }) => {
   if (!announcements.length) return null;
 
   return (
-    <div className="bg-purple-500 text-white py-2 relative overflow-hidden">
+    <div className="bg-blue-500 text-white py-2 relative overflow-hidden">
       <div className="container mx-auto px-4 flex justify-center items-center">
         <p className="text-sm font-medium animate-fade-in-out">
           {announcements[index]}
